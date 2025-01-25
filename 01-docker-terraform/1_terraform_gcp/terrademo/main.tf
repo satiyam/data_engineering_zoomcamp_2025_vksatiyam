@@ -10,14 +10,15 @@ terraform {
 
 provider "google" {
   #configuration options
-  project = "terraform-demo-435315"
-  region  = "asia-southeast"
-  zone    = "asia-southeast1-a"
-}
+  project = var.project_name
+  region  = var.region
+  zone    = var.zone
+  credentials = file(var.credentials)
+} 
 
 resource "google_storage_bucket" "auto-expire" {
-  name          = "terraform-demo-435315-gcsbucket"
-  location      = "ASIA"
+  name          = var.gcs_bucket_name
+  location      = var.location
   force_destroy = true
 
   lifecycle_rule {
@@ -38,5 +39,11 @@ resource "google_storage_bucket" "auto-expire" {
     }
   }
 }
+
+resource "google_bigquery_dataset" "demo_dataset" {
+  dataset_id = var.google_bigquery_dataset_name
+  location = var.location
+}
+
 
 
