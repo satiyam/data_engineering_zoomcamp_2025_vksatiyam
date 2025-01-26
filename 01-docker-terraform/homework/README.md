@@ -82,3 +82,18 @@ volumes:
 - **- db:5432**
 
 If there are more than one answers, select only one of them
+
+
+
+Download this data and put it into Postgres.
+
+You can use the code from the course. It's up to you whether
+you want to use Jupyter or a python script.
+
+__Please refer to **load_green_taxi.ipynb** under **01-docker-terraform/2_docker_sql** for the loading through jupyter-notebook__
+
+
+__Please refer to **load_green_taxi.py** under **01-docker-terraform/2_docker_sql** for the loading through python script__
+
+
+
