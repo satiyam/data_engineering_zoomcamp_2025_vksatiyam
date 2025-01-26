@@ -1,0 +1,62 @@
+
+-- question 3
+SELECT 
+	CASE
+		WHEN trip_distance<=1 THEN 'UP_TO_1_MILE'
+		WHEN trip_distance<=3 THEN 'UP_TO_3_MILE'
+		WHEN trip_distance<=7 THEN 'UP_TO_7_MILE'
+		WHEN trip_distance<=10 THEN 'UP_TO_10_MILE'
+		ELSE '>10_MILE'
+	END AS MILE_CLASSIFIER,
+	COUNT(1)
+FROM public.green_taxi_trips
+GROUP BY
+CASE
+	WHEN trip_distance<=1 THEN 'UP_TO_1_MILE'
+	WHEN trip_distance<=3 THEN 'UP_TO_3_MILE'
+	WHEN trip_distance<=7 THEN 'UP_TO_7_MILE'
+	WHEN trip_distance<=10 THEN 'UP_TO_10_MILE'
+	ELSE '>10_MILE'
+END;
+
+-- question 4
+SELECT 
+	TO_DATE(LEFT(lpep_pickup_datetime, 10), 'YYYY-MM-DD') lpep_pickup_date,
+	MAX(trip_distance) MAX_DISTANCE_TRIP
+FROM public.green_taxi_trips
+GROUP BY
+	TO_DATE(LEFT(lpep_pickup_datetime, 10), 'YYYY-MM-DD')
+ORDER BY MAX(trip_distance) DESC;
+
+
+SELECT * FROM public.green_taxi_trips;
+
+--question 5
+SELECT 
+LEFT(gtt.lpep_pickup_datetime, 10) pickup_date,
+gtt."PULocationID" "PULocationID",
+lpu."Zone" pickup_location,
+SUM(gtt.total_amount) total_amt
+FROM public.green_taxi_trips gtt
+LEFT JOIN public.zones lpu ON gtt."PULocationID"=lpu."LocationID"
+WHERE 
+LEFT(gtt.lpep_pickup_datetime, 10)='2019-10-18' 
+GROUP BY
+LEFT(gtt.lpep_pickup_datetime, 10),
+gtt."PULocationID",
+lpu."Zone"
+HAVING SUM(gtt.total_amount)>13000;
+
+--Question 6
+SELECT 
+LEFT(gtt.lpep_pickup_datetime, 10) pickup_date,
+gtt."DOLocationID" "DOLocationID",
+lpu."Zone" pickup_location,
+gtt.tip_amount
+FROM public.green_taxi_trips gtt
+LEFT JOIN public.zones lpu ON gtt."DOLocationID"=lpu."LocationID"
+WHERE
+lpu."Zone"='East Harlem North';
+
+
+	
