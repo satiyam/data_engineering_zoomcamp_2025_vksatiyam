@@ -1,0 +1,38 @@
+id: postgres_taxi_foreach
+namespace: postgres
+
+tasks:
+  - id: python
+    type: io.kestra.core.tasks.scripts.Python
+    inputFiles:
+      data.json: |
+        {"status": "OK"}
+      main.py: |
+        import itertools, json
+        from kestra import Kestra
+        months = list(map(lambda s: str(s).rjust(2,'0'), range(1,13)))
+        months_2021 = list(map(lambda s: str(s).rjust(2,'0'), range(1,8)))
+        year = ['2019','2020']
+        combinations = list(itertools.product(months, year))
+        combinations_2021 = list(itertools.product(months_2021, ['2021']))
+        combinations = [{'year':c[1], 'month':c[0]} for c in combinations]
+        combinations_2021 = [{'year':c[1], 'month':c[0]} for c in combinations_2021]
+        combinations.extend(combinations_2021)
+        Kestra.outputs({"data": combinations})
+
+  - id: loop_logger
+    type: io.kestra.plugin.core.flow.ForEach
+    values: "{{ outputs.python['vars']['data']}}"
+    tasks:
+      - id: logger
+        type: io.kestra.plugin.core.log.Log
+        message: "Year: {{ taskrun.value | jq('.year') | first }}, Month: {{ taskrun.value | jq('.month') | first }}"
+      
+      - id: postgres_green_taxi_data_fill
+        type: io.kestra.plugin.core.flow.Subflow
+        namespace: postgres
+        inputs:
+          month: "{{ taskrun.value | jq('.month') | first }}"
+          taxi_type: "green"
+          year: "{{ taskrun.value | jq('.year') | first }}"
+        flowId: postgres_taxi
