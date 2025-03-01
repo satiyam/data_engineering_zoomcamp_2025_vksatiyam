@@ -47,7 +47,7 @@ from {{ source('raw_nyc_tripdata', 'ext_green_taxi' ) }}
 - `select * from dtc_zoomcamp_2025.raw_nyc_tripdata.ext_green_taxi`
 - `select * from dtc_zoomcamp_2025.my_nyc_tripdata.ext_green_taxi`
 - `select * from myproject.raw_nyc_tripdata.ext_green_taxi`
-**- `select * from myproject.my_nyc_tripdata.ext_green_taxi`**
+- **`select * from myproject.my_nyc_tripdata.ext_green_taxi`**
 - `select * from dtc_zoomcamp_2025.raw_nyc_tripdata.green_taxi`
 
 
@@ -73,7 +73,7 @@ What would you change to accomplish that in a such way that command line argumen
 - Add `ORDER BY pickup_datetime DESC` and `LIMIT {{ var("days_back", 30) }}`
 - Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ var("days_back", 30) }}' DAY`
 - Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ env_var("DAYS_BACK", "30") }}' DAY`
-**- Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ var("days_back", env_var("DAYS_BACK", "30")) }}' DAY`**
+- **Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ var("days_back", env_var("DAYS_BACK", "30")) }}' DAY`**
 - Update the WHERE clause to `pickup_datetime >= CURRENT_DATE - INTERVAL '{{ env_var("DAYS_BACK", var("days_back", "30")) }}' DAY`
 
 
@@ -89,7 +89,7 @@ Select the option that does **NOT** apply for materializing `fct_taxi_monthly_zo
 - `dbt run --select +models/core/dim_taxi_trips.sql+ --target prod`
 - `dbt run --select +models/core/fct_taxi_monthly_zone_revenue.sql`
 - `dbt run --select +models/core/`
-**- `dbt run --select models/staging/+`**
+- **`dbt run --select models/staging/+`**
 
 
 **Solution: It does not materialize dim_zone_lookup required for materializing fct_taxi_monthly_zone_revenue.**
@@ -127,11 +127,11 @@ And use on your staging, dim_ and fact_ models as:
 
 That all being said, regarding macro above, **select all statements that are true to the models using it**:
 
-**- Setting a value for  `DBT_BIGQUERY_TARGET_DATASET` env var is mandatory, or it'll fail to compile**
+- **Setting a value for  `DBT_BIGQUERY_TARGET_DATASET` env var is mandatory, or it'll fail to compile**
 - Setting a value for `DBT_BIGQUERY_STAGING_DATASET` env var is mandatory, or it'll fail to compile
-**- When using `core`, it materializes in the dataset defined in `DBT_BIGQUERY_TARGET_DATASET`**
-**- When using `stg`, it materializes in the dataset defined in `DBT_BIGQUERY_STAGING_DATASET`, or defaults to `DBT_BIGQUERY_TARGET_DATASET`**
-**- When using `staging`, it materializes in the dataset defined in `DBT_BIGQUERY_STAGING_DATASET`, or defaults to `DBT_BIGQUERY_TARGET_DATASET`**
+- **When using `core`, it materializes in the dataset defined in `DBT_BIGQUERY_TARGET_DATASET`**
+- **When using `stg`, it materializes in the dataset defined in `DBT_BIGQUERY_STAGING_DATASET`, or defaults to `DBT_BIGQUERY_TARGET_DATASET`**
+- **When using `staging`, it materializes in the dataset defined in `DBT_BIGQUERY_STAGING_DATASET`, or defaults to `DBT_BIGQUERY_TARGET_DATASET`**
 
 
 ## Serious SQL
@@ -159,8 +159,59 @@ Considering the YoY Growth in 2020, which were the yearly quarters with the best
 - green: {best: 2020/Q2, worst: 2020/Q1}, yellow: {best: 2020/Q2, worst: 2020/Q1}
 - green: {best: 2020/Q2, worst: 2020/Q1}, yellow: {best: 2020/Q3, worst: 2020/Q4}
 - green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q2, worst: 2020/Q1}
-**- green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q1, worst: 2020/Q2}**
+- **green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q1, worst: 2020/Q2}**
 - green: {best: 2020/Q1, worst: 2020/Q2}, yellow: {best: 2020/Q3, worst: 2020/Q4}
+
+
+**Solution for Question 5**
+```SQL
+{{ config(materialized="table") }}
+
+with
+    trips_month_agg as (
+        select
+            service_type,
+            extract(year from pickup_datetime) as year_var,
+            extract(quarter from pickup_datetime) as quarter_var,
+            extract(month from pickup_datetime) as month_var,
+            sum(total_amount) as total_revenue
+        from {{ ref("fact_trips") }}
+        where extract(year from pickup_datetime) in (2019, 2020)
+        group by 1, 2, 3, 4
+        order by 1, 2, 3, 4
+    ),
+    quarterly_sum as (
+        select
+            service_type, quarter_var, year_var, sum(total_revenue) as quarterly_revenue
+        from trips_month_agg
+        where year_var in (2019, 2020)
+        group by 1, 2, 3
+        order by 1, 2, 3
+    ),
+    yoy as (
+        select
+            service_type,
+            quarter_var as quarter_compared,
+            year_var as curr_year,
+            lead(year_var) over (
+                partition by service_type, quarter_var order by year_var
+            ) as next_year,
+            quarterly_revenue as curryear_quarterly_revenue,
+            lead(quarterly_revenue) over (
+                partition by service_type, quarter_var order by year_var
+            ) as nextyear_quarterly_revenue
+        from quarterly_sum
+        -- where year_var=2019
+        order by service_type, quarter_compared, curr_year
+    )
+select
+    *,
+    100.0
+    * (nextyear_quarterly_revenue - curryear_quarterly_revenue)
+    / curryear_quarterly_revenue yoy_growth
+from yoy
+where curr_year = 2019
+```
 
 
 ### Question 6: P97/P95/P90 Taxi Monthly Fare
@@ -172,10 +223,46 @@ Considering the YoY Growth in 2020, which were the yearly quarters with the best
 Now, what are the values of `p97`, `p95`, `p90` for Green Taxi and Yellow Taxi, in April 2020?
 
 - green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 52.0, p95: 37.0, p90: 25.5}
-- green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 31.5, p95: 25.5, p90: 19.0}
+- **green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 31.5, p95: 25.5, p90: 19.0}**
 - green: {p97: 40.0, p95: 33.0, p90: 24.5}, yellow: {p97: 52.0, p95: 37.0, p90: 25.5}
 - green: {p97: 40.0, p95: 33.0, p90: 24.5}, yellow: {p97: 31.5, p95: 25.5, p90: 19.0}
 - green: {p97: 55.0, p95: 45.0, p90: 26.5}, yellow: {p97: 52.0, p95: 25.5, p90: 19.0}
+
+
+
+**Solution for Question 6**
+```SQL
+{{
+    config(
+        materialized='table'
+    )
+}}
+
+with trips as(
+    select
+    service_type,
+    extract(year from pickup_datetime) as year_var,
+    extract(month from pickup_datetime) as month_var,
+    fare_amount
+    from {{ ref('fact_trips') }}
+    where
+    1=1
+    and fare_amount>0
+    and trip_distance>0
+    and payment_type_description in ('Cash', 'Credit card')
+)
+select 
+    *,
+    percentile_cont(fare_amount, 0.9) over(partition by service_type, year_var, month_var) as p90_fare,
+    percentile_cont(fare_amount, 0.95) over(partition by service_type, year_var, month_var) as p95_fare,
+    percentile_cont(fare_amount, 0.97) over(partition by service_type, year_var, month_var) as p97_fare,
+    row_number() over (partition by service_type, year_var, month_var) as row_num
+from trips
+where year_var=2020 and month_var=4
+qualify row_num=1
+```
+
+
 
 
 ### Question 7: Top #Nth longest P90 travel time Location for FHV
@@ -194,7 +281,7 @@ For the Trips that **respectively** started from `Newark Airport`, `SoHo`, and `
 
 - LaGuardia Airport, Chinatown, Garment District
 - LaGuardia Airport, Park Slope, Clinton East
-- LaGuardia Airport, Saint Albans, Howard Beach
+- **LaGuardia Airport, Saint Albans, Howard Beach**
 - LaGuardia Airport, Rosedale, Bath Beach
 - LaGuardia Airport, Yorkville East, Greenpoint
 
