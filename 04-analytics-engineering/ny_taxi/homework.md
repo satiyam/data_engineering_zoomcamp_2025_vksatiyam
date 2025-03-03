@@ -285,6 +285,34 @@ For the Trips that **respectively** started from `Newark Airport`, `SoHo`, and `
 - LaGuardia Airport, Rosedale, Bath Beach
 - LaGuardia Airport, Yorkville East, Greenpoint
 
+**Solution to get the answer from bigquery**
+
+```SQL
+WITH data as(
+  SELECT 
+  pickup_zone,
+  dropoff_zone,
+  p90_trip_duration
+  FROM `terraform-demo-435315.dbt_satiyam.fct_fhv_monthly_zone_traveltime_p90`
+  where 
+  1=1
+  and pickup_zone in ('Newark Airport','SoHo', 'Yorkville East')
+  and year_var=2019
+  and month_var=11
+  group by pickup_zone, dropoff_zone, p90_trip_duration
+  order by pickup_zone, p90_trip_duration desc
+)
+select
+pickup_zone, 
+dropoff_zone,
+p90_trip_duration,
+dense_rank() over(partition by pickup_zone order by p90_trip_duration desc) rank_num
+from data
+qualify rank_num=2;
+
+```
+
+
 
 ## Submitting the solutions
 
