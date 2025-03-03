@@ -12,7 +12,7 @@ sources:
           yellow_tripdata
           # freshness:
           # error_after: {count: 6, period: hour}
-
+      - name: fhv_tripdata
 models:
   - name: stg_green_tripdata
     description: >
@@ -196,3 +196,38 @@ models:
         description: Total amount of all tolls paid in trip.
       - name: Total_amount
         description: The total amount charged to passengers. Does not include cash tips.
+
+  - name: stg_fhv_tripdata
+    description: ""
+    columns:
+      - name: dispatchid
+        data_type: string
+        description: "The dispatch id of cab"
+
+      - name: pickup_locationid
+        data_type: int64
+        description: "The pickup location id"
+
+      - name: dropoff_locationid
+        data_type: int64
+        description: "The dropoff location id"
+
+      - name: pickup_datetime
+        data_type: timestamp
+        description: "The pickup datetime"
+
+      - name: dropoff_datetime
+        data_type: timestamp
+        description: "The dropoff datetime"
+
+      - name: sr_flag
+        data_type: string
+        description: "SR flag description"
+
+      - name: dispatching_base_num
+        data_type: string
+        description: ""
+
+      - name: affiliated_base_number
+        data_type: string
+        description: ""
