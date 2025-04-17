@@ -59,3 +59,4 @@ target/
 dbt_packages/
 logs/
 
+*.json

@@ -1,0 +1,21 @@
+FROM kestra/kestra:latest
+USER root
+RUN whoami
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends openssh-client && \
+    rm -rf /var/lib/apt/lists/*
+# If the base image uses a non-root user, uncomment and adjust:
+# USER kestra
+
+# Install gcloud CLI
+RUN apt-get update && \
+    apt-get install -y apt-transport-https ca-certificates gnupg curl && \
+    echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] https://packages.cloud.google.com/apt cloud-sdk main" > /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /usr/share/keyrings/cloud.google.gpg && \
+    apt-get update && \
+    apt-get install -y google-cloud-sdk && \
+    # Optional: Install specific components if needed beyond the defaults provided by the package
+    # gcloud components install -q component-id \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+

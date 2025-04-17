@@ -1,0 +1,11 @@
+dlt 
+requests
+pandas
+datetime
+pytz
+tqdm
+selenium
+webdriver_manager
+undetected_chromedriver
+beautifulsoup4
+jupyter

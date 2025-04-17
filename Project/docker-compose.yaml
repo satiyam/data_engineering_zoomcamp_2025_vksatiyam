@@ -1,0 +1,18 @@
+version: '3.3'
+
+services:
+  scraper:
+    build:
+      context: ./scraper
+      dockerfile: ./Dockerfile
+    container_name: selenium_scraper
+    volumes:
+      - ./scraper:/app
+      - /dev/shm:/dev/shm  # Prevents Chrome crash
+    shm_size: '4gb'
+    environment:
+      - DISPLAY=:99
+    ports:
+      - "8888:8888"  # Expose port 8080 for the scraper service
+    tty: true
+    stdin_open: true

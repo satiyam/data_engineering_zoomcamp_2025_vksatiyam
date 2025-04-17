@@ -1,0 +1,16 @@
+[runtime]
+log_level = "WARNING"
+dlthub_telemetry = true
+
+[cryptoheaders]
+coin_id = "bitcoin"
+vs_currency = "usd"
+days = "3"
+initial_load = false
+
+
+[cryptopanic-headers]
+currencies = "BTC"
+public = "true"
+filter ="hot"
+
