@@ -214,15 +214,25 @@ docker-compose up -d
 
    ![image](https://github.com/user-attachments/assets/3f28807e-75f9-41d3-8516-c4b7d62877b6)
 
+   The above is the .whl file of the VADER sentiment analysis library extracted through tar extractor and zipped to a zipped folder.
+
    ![image](https://github.com/user-attachments/assets/e8a24058-f755-43a8-a86f-5044f0fdf331)
+
+   The above is the main python script to run the Pyspark transformations as well as perform predictions using the VADER sentiment analysis library.
+
+4. Submit the job to the dataproc cluster and see if it executes successfully.
 
 ##### Creating the kestra workflow
 
-Pre-requisites: Ensure kestra docker is running.
+Pre-requisites: Ensure kestra docker is running; dataprocs cluster is set-up and running.
 
 1. Click "Create Flow".
 
 2. Toggle to "No-code editor"
+
+3. Copy paste the code from 'kestra_flow.yaml'.
+
+4. Execute the code and see if it is able to execute successfully.
 
    
 
