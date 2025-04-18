@@ -134,11 +134,15 @@ chmod 600 ~/.ssh/config
 1. To establish the reverse tunneling, you have to perform the following commands
 
 ```bash
-ssh -N -R 9090:localhost:22 project-zoomcamp
+ssh -v -N -R 9000:localhost:22 satiy@34.2.16.41
 ```
 
 2. In a seperate bash terminal, ssh into the VM and see if you can access the IP address of the Oracle VM.
 
+```bash
+ssh -p 9000 satiyam@localhost
+```
 
+3. Authentication should be successful.
 
 
