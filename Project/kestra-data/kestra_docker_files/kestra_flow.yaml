@@ -1,0 +1,60 @@
+id: crypto_orchestrate
+namespace: data-engineering
+
+tasks:
+
+  - id: save_private_key
+    type: io.kestra.core.tasks.scripts.Bash
+    commands:
+      - mkdir -p /root/.ssh
+      - echo "{{ kv('private_key') }}" > /root/.ssh/dezoomcamp_ed25519
+      - chmod 600 /root/.ssh/dezoomcamp_ed25519
+
+  - id: run_remote_docker_commands
+    type: io.kestra.core.tasks.scripts.Bash
+    commands:
+      - |
+        ssh -p 9090 -i ~/.ssh/dezoomcamp_ed25519 satiy@localhost <<EOF
+          cd C:\Users\satiy\Downloads\data_engineering_zoomcamp\Project\dockerized
+
+          echo "Running docker-compose up -d"
+          docker-compose up -d
+
+          echo "Checking all docker containers:"
+          docker ps -a
+
+          monitor_docker.bat
+
+        EOF
+
+  - id: base64-decode
+    type: io.kestra.core.tasks.scripts.Bash
+    commands:
+      - echo "{{ kv('kestra-dataprocs-base64') }}" | base64 --decode >> {{ outputFiles['gcp.json'] }}
+    logToFile: false
+    outputFiles:
+      - gcp.json
+
+  - id: authenticate_service_account
+    type: io.kestra.core.tasks.scripts.Bash
+    commands:
+      - KEY_FILE="{{ outputs['base64-decode'].outputFiles['gcp.json'] }}"
+      - gcloud auth activate-service-account --key-file="$KEY_FILE"
+
+  # - id: start_dataprocs_cluster
+  #   type: io.kestra.core.tasks.scripts.Bash
+  #   commands:
+  #     - gcloud dataproc clusters start crypto-sentiment-cluster --region=asia-southeast1
+
+
+  - id: spark_submit
+    type: io.kestra.core.tasks.scripts.Bash
+    commands:
+      - gcloud dataproc jobs submit pyspark gs://zoomcamp_project_v1/main_python_script/Crypto_Data_Transformation.py --cluster=crypto-sentiment-cluster --region=asia-southeast1 --project=terraform-demo-435315 --archives=gs://zoomcamp_project_v1/dependencies/vader_sentiment_lib.zip#vader_sentiment_lib -- --crypto_prices_path=gs://zoomcamp_project_v1/crypto_data/crypto_prices --reddit_sentiments_path=gs://zoomcamp_project_v1/crypto_sentiments/crypto_sentiments --cryptopanic_sentiments_path=gs://zoomcamp_project_v1/crypto_sentiments/cryptopanic_sentiments --bigquery_dataset_output=crypto_project
+  - id: stop_dataprocs_cluster
+    type: io.kestra.core.tasks.scripts.Bash
+    commands:
+      - gcloud dataproc clusters stop crypto-sentiment-cluster --region=asia-southeast1
+
+
+
