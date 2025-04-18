@@ -33,4 +33,112 @@ This pipeline is fully orchestrated with Kestra, automating the entire workflow 
 ![image](https://github.com/user-attachments/assets/b024e95a-03d0-47fb-9a16-0502c045cb2d)
 
 
+## Folder Structure
+
+```bash
+.
+├── PBI_cryptodashboard.pbix
+├── architecture_flow.pptx
+├── dataprocs
+│   ├── Crypto_Data_Transformation.ipynb
+│   ├── Crypto_Data_Transformation.py
+│   ├── vaderSentiment-3.3.2-py2.py3-none-any.whl
+│   └── vader_sentiment_lib
+│       ├── vaderSentiment
+│       │   ├── __init__.py
+│       │   ├── emoji_utf8_lexicon.txt
+│       │   ├── vaderSentiment.py
+│       │   └── vader_lexicon.txt
+│       └── vaderSentiment-3.3.2.dist-info
+│           ├── LICENSE.txt
+│           ├── METADATA
+│           ├── RECORD
+│           ├── WHEEL
+│           └── top_level.txt
+├── docker-compose.yaml
+├── kestra-data
+│   └── kestra_docker_files
+│       ├── Dockerfile.kestra
+│       ├── docker-compose.yml
+│       └── service-account
+│           └── terraform-demo-435315-7b3f0c915958.json
+├── monitor_docker.bat
+└── scraper
+    ├── Data_Ingestion.ipynb
+    ├── Data_Ingestion.py
+    ├── Dockerfile
+    ├── Dockerfile_bkup.txt
+    ├── __pycache__
+    │   └── scrappers.cpython-312.pyc
+    ├── requirements.txt
+    └── scrappers.py
+```
+
+
+There are 3 main folders:
+- scraper folder:Contains the docker files required for running selenium based webscraper on the localhost (PC environment of users)
+- kestra-data: Contains the docker files for creating a kestra docker container on the GCP VM to orchestrate the process end to end.
+- dataprocs: Contains the source code and files for running PySpark on a dataprocs cluster.
+
+
+### Quickstart guide
+
+
+#### Spin up a GCP VM cluster
+
+Region: asia-southeast1.
+Machine-type: e2-standard-4 (4 vCPUs, 16 GB memory)
+
+Assign a static IP address to the machine on GCP VM.
+
+
+#### Establish connection between GCP VM and local machine
+
+1. To establish connection between GCP VM and local machine, we need to create a SSH key on our local machine. Use the following command below:
+
+```bash
+ssh-keygen -t ed25519 -C "user"
+cd ~/.ssh
+cat id_ed25519.pub
+```
+
+2. Copy the outputs from Step 1 and paste to GCP VM under "SSH Keys" of the GCP VM.
+   
+4. Stop and restart the instance.
+  
+5. Try to SSH into the GCP VM using the command below, where username refers to the "user" in Step 1 and "external-ip" would be the static IP address assigned to the GCP VM:
+
+```bash
+ssh -i ~/.ssh/id_ed25519 username@<external-ip>
+```
+e.g. ssh -i ~/.ssh/id_ed25519 satiy@34.2.16.41
+
+6. Create a config file and store the credentials as follows in the file 'config'
+
+```bash
+PS C:\Users\satiy\.ssh> cat config
+Host project-ssh
+    HostName 34.2.16.41
+    User satiy
+    IdentityFile ~/.ssh/dezoomcamp_ed25519
+```
+
+7. Set the appropriate permissions
+   
+```bash
+chmod 600 ~/.ssh/config
+```
+
+#### Establish Reverse Tunneling
+
+1. To establish the reverse tunneling, you have to perform the following commands
+
+```bash
+ssh -N -R 9090:localhost:22 project-zoomcamp
+```
+
+2. In a seperate bash terminal, 
+
+
+
 
