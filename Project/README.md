@@ -91,6 +91,24 @@ Machine-type: e2-standard-4 (4 vCPUs, 16 GB memory)
 
 Assign a static IP address to the machine on GCP VM.
 
+#### Creating a new GCS bucket 
+
+1. Go to GCP and setup a new GCS bucket for the project.
+
+#### Creating a new principal service account
+
+1. Go to "IAM and Admin" to setup a new principal service account e.g. "project-zoomcamp-api@terraform-demo-435315.iam.gserviceaccount.com"
+
+2. Assign the following roles:
+    - BigQuery Admin
+    - Compute Admin
+    - Dataproc Administrator
+    - Storage Admin
+  
+3. Create key credentials to access the principal service account and store the '.json' file to your local environment
+   __Warning: DO NOT SHARE THE CREDENTIALS OR HOST IN PUBLIC WEBSITES__
+
+
 
 #### Establish connection between GCP VM and local machine
 
@@ -167,6 +185,46 @@ docker-compose up -d
 4. Wait for the docker to running finish
 
 
+#### Spinning up kestra orchestrator container on Oracle VMBox
+
+Pre-requisites: Have docker and docker-compose setup beforehand.
+
+1. To spin up the docker container on GCP Virtual Machine, first copy the 'kestra_docker_files' directory within the 'kestra-data' folder to the 'Documents' folder of the GCP VM.
+   
+2. To spin up the docker container, first build from the docker compose using the command below
+
+```bash
+docker-compose build --no-cache-dir
+```
+
+3. Then run the docker container using the following command
+
+```bash
+docker-compose up -d
+```
+
+4. Check if kestra is accessible from the <GCP_IP_STATIC_ADDRESS>:8080. e.g. 34.2.16.41:8080
+
+![image](https://github.com/user-attachments/assets/bee92d01-f534-478f-99e7-25f393b9c28b)
+
+### Setting up the dataproc cluster
+
+1. Create a new dataproc cluster on GCP.
+2. Under the GCS bucket, host the following files:
+
+   ![image](https://github.com/user-attachments/assets/3f28807e-75f9-41d3-8516-c4b7d62877b6)
+
+   ![image](https://github.com/user-attachments/assets/e8a24058-f755-43a8-a86f-5044f0fdf331)
+
+##### Creating the kestra workflow
+
+Pre-requisites: Ensure kestra docker is running.
+
+1. Click "Create Flow".
+
+2. Toggle to "No-code editor"
+
+   
 
 
 
