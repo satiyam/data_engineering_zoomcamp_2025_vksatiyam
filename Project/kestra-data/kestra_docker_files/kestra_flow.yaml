@@ -41,10 +41,10 @@ tasks:
       - KEY_FILE="{{ outputs['base64-decode'].outputFiles['gcp.json'] }}"
       - gcloud auth activate-service-account --key-file="$KEY_FILE"
 
-  # - id: start_dataprocs_cluster
-  #   type: io.kestra.core.tasks.scripts.Bash
-  #   commands:
-  #     - gcloud dataproc clusters start crypto-sentiment-cluster --region=asia-southeast1
+  - id: start_dataprocs_cluster
+    type: io.kestra.core.tasks.scripts.Bash
+    commands:
+      - gcloud dataproc clusters start crypto-sentiment-cluster --region=asia-southeast1
 
 
   - id: spark_submit
