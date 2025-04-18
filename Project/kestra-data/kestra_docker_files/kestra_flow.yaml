@@ -51,6 +51,7 @@ tasks:
     type: io.kestra.core.tasks.scripts.Bash
     commands:
       - gcloud dataproc jobs submit pyspark gs://zoomcamp_project_v1/main_python_script/Crypto_Data_Transformation.py --cluster=crypto-sentiment-cluster --region=asia-southeast1 --project=terraform-demo-435315 --archives=gs://zoomcamp_project_v1/dependencies/vader_sentiment_lib.zip#vader_sentiment_lib -- --crypto_prices_path=gs://zoomcamp_project_v1/crypto_data/crypto_prices --reddit_sentiments_path=gs://zoomcamp_project_v1/crypto_sentiments/crypto_sentiments --cryptopanic_sentiments_path=gs://zoomcamp_project_v1/crypto_sentiments/cryptopanic_sentiments --bigquery_dataset_output=crypto_project
+
   - id: stop_dataprocs_cluster
     type: io.kestra.core.tasks.scripts.Bash
     commands:
