@@ -137,7 +137,7 @@ chmod 600 ~/.ssh/config
 ssh -N -R 9090:localhost:22 project-zoomcamp
 ```
 
-2. In a seperate bash terminal, 
+2. In a seperate bash terminal, ssh into the VM and see if you can access the IP address of the Oracle VM.
 
 
 
