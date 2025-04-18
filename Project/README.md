@@ -30,6 +30,7 @@ Visualization: Final dashboards are built in Power BI, showing:
 
 This pipeline is fully orchestrated with Kestra, automating the entire workflow from ingestion to dashboard update.
 
+![image](https://github.com/user-attachments/assets/b024e95a-03d0-47fb-9a16-0502c045cb2d)
 
-![image](https://github.com/user-attachments/assets/6dfa0123-1e47-4535-92e4-7531c2bf6ad5)
+
 
