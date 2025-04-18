@@ -146,3 +146,29 @@ ssh -p 9000 satiyam@localhost
 3. Authentication should be successful.
 
 
+#### Spinning up docker container on Oracle VMBox
+
+Pre-requisites: Have docker and docker-compose setup beforehand.
+
+1. To spin up the docker container on Oracle Virtual Machine, first copy the 'scraper' folder to the 'Documents' folder of the Oracle Virtual Machine.
+   
+2. To spin up the docker container, first build from the docker compose using the command below
+
+```bash
+docker-compose build --no-cache-dir
+```
+
+3. Then run the docker container using the following command
+
+```bash
+docker-compose up -d
+```
+
+4. Wait for the docker to running finish
+
+
+
+
+
+
+
