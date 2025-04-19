@@ -88,7 +88,6 @@ There are 3 main folders:
 
 ### Quickstart guide
 
-
 #### Spin up a GCP VM cluster
 
 Region: asia-southeast1.
@@ -166,7 +165,7 @@ chmod 600 ~/.ssh/config
 ssh -v -N -R 9000:localhost:22 <username_of_your_Oracle VM>@<external-ip>
 ```
 
-2. In a seperate bash terminal, ssh into the VM and see if you can access the IP address of the Oracle VM.
+2. In a seperate bash terminal, ssh into the GCP VM and see if you can access the IP address of the Oracle VM from port 9000 of the GCP VM by running the command below on the terminal of the GCP VM:
 
 ```bash
 ssh -p 9000 <username_of_your_Oracle VM>@localhost
@@ -175,23 +174,28 @@ ssh -p 9000 <username_of_your_Oracle VM>@localhost
 3. Authentication should be successful.
 
 
-#### Spinning up docker container on Oracle VMBox
+#### Building docker container on Oracle VMBox
 
-Pre-requisites: Have docker and docker-compose setup beforehand.
+Pre-requisites: 
+- Have docker and docker-compose setup beforehand. Refer to the following link on how this can be setup in RHEL 8.9 ISO image: https://medium.com/@amitkashyap571994/installing-docker-ce-and-docker-compose-on-rhel8-8ae4a5371e3a
+- Have iso image of RHEL8.9 installed and mounted on Oracle VMBox: https://yum.oracle.com/ISOS/OracleLinux/OL8/u9/x86_64/OracleLinux-R8-U9-x86_64-boot.iso
+
 
 1. To spin up the docker container on Oracle Virtual Machine, first copy the 'scraper' folder to the 'Documents' folder of the Oracle Virtual Machine.
    
-2. To spin up the docker container, first build from the docker compose using the command below
+2. To build the docker container, first build from the docker compose using the command below
 
 ```bash
 docker-compose build --no-cache-dir
 ```
 
+Note: You do not need to run the container at this stage - that will be taken care of by the kestra orchestrator.
 
 
 #### Spinning up kestra orchestrator container on GCP Virtual Machine
 
-Pre-requisites: Have docker and docker-compose setup beforehand.
+Pre-requisites: Have docker and docker-compose setup beforehand. Refer to: https://reintech.io/blog/setting-up-docker-docker-compose-debian-12 for more information on how this can be done.
+
 
 1. To spin up the docker container on GCP Virtual Machine, first copy the 'kestra_docker_files' directory within the 'kestra-data' folder to the 'Documents' folder of the GCP VM.
    
@@ -211,6 +215,7 @@ docker-compose up -d
 
 ![image](https://github.com/user-attachments/assets/bee92d01-f534-478f-99e7-25f393b9c28b)
 
+
 #### Setting up the dataproc cluster
 
 1. Create a new dataproc cluster on GCP.
@@ -220,11 +225,12 @@ docker-compose up -d
 
    The above is the .whl file of the VADER sentiment analysis library extracted through tar extractor and zipped to a zipped folder.
 
-   
-
    ![image](https://github.com/user-attachments/assets/e8a24058-f755-43a8-a86f-5044f0fdf331)
 
    The above is the main python script to run the Pyspark transformations as well as perform predictions using the VADER sentiment analysis library.
+
+Note: You do not need to run the dataprocs cluster at this stage - that will be taken care of by the kestra orchestrator.
+
 
 #### Creating the kestra workflow
 
