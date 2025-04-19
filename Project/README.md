@@ -3,6 +3,11 @@
 CryptoPulse: Sentiment-Driven Market Insights
 
 
+### Problem Statement
+Cryptocurrency markets are volatile, and sentiment on platforms like Reddit and Twitter significantly influences price trends. Current methods lack real-time sentiment integration for fraud detection and market forecasting. This project addresses that gap by combining social media sentiment analysis with market data to predict fluctuations and detect fraudulent behavior in crypto transactions.
+
+
+
 ### Background & Overview:
 CryptoPulse is a data engineering project focused on understanding the impact of social media sentiment on cryptocurrency market trends. The project integrates Reddit posts/comments, news aggregator content (like CryptoPanic), and market data (prices, volume, market cap) to uncover patterns in how online sentiment influences crypto asset behavior.
 
