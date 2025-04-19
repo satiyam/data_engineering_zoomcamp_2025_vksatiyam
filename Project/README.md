@@ -115,7 +115,7 @@ Assign a static IP address to the machine on GCP VM.
 1. To establish connection between GCP VM and local machine, we need to create a SSH key on our local machine. Use the following command below:
 
 ```bash
-ssh-keygen -t ed25519 -C "user"
+ssh-keygen -t ed25519 -C <username_of_your_pc>
 cd ~/.ssh
 cat id_ed25519.pub
 ```
@@ -124,10 +124,10 @@ cat id_ed25519.pub
    
 4. Stop and restart the instance.
   
-5. Try to SSH into the GCP VM using the command below, where username refers to the "user" in Step 1 and "external-ip" would be the static IP address assigned to the GCP VM:
+5. Try to SSH into the GCP VM using the command below, where username refers to the <username_of_your_pc> in Step 1 and "external-ip" would be the static IP address assigned to the GCP VM:
 
 ```bash
-ssh -i ~/.ssh/id_ed25519 username@<external-ip>
+ssh -i ~/.ssh/id_ed25519 <username_of_your_pc>@<external-ip>
 ```
 e.g. ssh -i ~/.ssh/id_ed25519 satiy@34.2.16.41
 
@@ -136,9 +136,9 @@ e.g. ssh -i ~/.ssh/id_ed25519 satiy@34.2.16.41
 ```bash
 PS C:\Users\satiy\.ssh> cat config
 Host project-ssh
-    HostName 34.2.16.41
-    User satiy
-    IdentityFile ~/.ssh/dezoomcamp_ed25519
+    HostName <external-ip>
+    User <username_of_your_pc>
+    IdentityFile ~/.ssh/id_ed25519
 ```
 
 7. Set the appropriate permissions
@@ -152,13 +152,13 @@ chmod 600 ~/.ssh/config
 1. To establish the reverse tunneling, you have to perform the following commands
 
 ```bash
-ssh -v -N -R 9000:localhost:22 satiy@34.2.16.41
+ssh -v -N -R 9000:localhost:22 <username_of_your_pc>@<external-ip>
 ```
 
 2. In a seperate bash terminal, ssh into the VM and see if you can access the IP address of the Oracle VM.
 
 ```bash
-ssh -p 9000 satiyam@localhost
+ssh -p 9000 <username_of_your_pc>@localhost
 ```
 
 3. Authentication should be successful.
