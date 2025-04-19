@@ -94,7 +94,10 @@ There are 3 main folders:
 Region: asia-southeast1.
 Machine-type: e2-standard-4 (4 vCPUs, 16 GB memory)
 
-Assign a static IP address to the machine on GCP VM.
+Assign a static IP address to the machine on GCP VM. You can follow the screenshot below on where to reserve the static IP address:
+
+![image](https://github.com/user-attachments/assets/2424f2e6-a9d6-450f-885a-2a51835ba050)
+
 
 #### Creating a new GCS bucket 
 
@@ -216,7 +219,7 @@ docker-compose up -d
 
 ![image](https://github.com/user-attachments/assets/bee92d01-f534-478f-99e7-25f393b9c28b)
 
-### Setting up the dataproc cluster
+#### Setting up the dataproc cluster
 
 1. Create a new dataproc cluster on GCP.
 2. Under the GCS bucket, host the following files:
@@ -229,9 +232,7 @@ docker-compose up -d
 
    The above is the main python script to run the Pyspark transformations as well as perform predictions using the VADER sentiment analysis library.
 
-4. Submit the job to the dataproc cluster and see if it executes successfully.
-
-##### Creating the kestra workflow
+#### Creating the kestra workflow
 
 Pre-requisites: Ensure kestra docker is running; dataprocs cluster is set-up and running.
 
@@ -242,6 +243,13 @@ Pre-requisites: Ensure kestra docker is running; dataprocs cluster is set-up and
 3. Copy paste the code from 'kestra_flow.yaml'.
 
 4. Execute the code and see if it is able to execute successfully.
+
+
+### Limitations of Project
+
+1. Due to the duration of the project and complexity in establishing the reverse SSH tunneling, a terraform script could not be created for this project. This might be seen as the next leg of the project to deploy it in an IAAC fashion.
+   
+2. Scraping of reddit webpages cannot be done through scripts deployed on GCP VM as reddit network security blocks such scraping of data - the only route would be to set it up on a Oracle VM machine running locally - however, the trigger to start the 'scraper' docker within the oracle VM requires a trigger from GCP VM (thus the need for reverse tunneling).
 
    
 
