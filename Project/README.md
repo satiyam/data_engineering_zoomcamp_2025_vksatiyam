@@ -185,7 +185,7 @@ docker-compose up -d
 4. Wait for the docker to running finish
 
 
-#### Spinning up kestra orchestrator container on Oracle VMBox
+#### Spinning up kestra orchestrator container on GCP Virtual Machine
 
 Pre-requisites: Have docker and docker-compose setup beforehand.
 
