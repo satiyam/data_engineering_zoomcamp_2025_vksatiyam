@@ -222,11 +222,13 @@ docker-compose up -d
 #### Setting up the dataproc cluster
 
 1. Create a new dataproc cluster on GCP.
-2. Under the GCS bucket, host the following files:
+2. Under the GCS bucket, host the following files (the files are present in the "dataprocs" folder within this repository):
 
    ![image](https://github.com/user-attachments/assets/3f28807e-75f9-41d3-8516-c4b7d62877b6)
 
    The above is the .whl file of the VADER sentiment analysis library extracted through tar extractor and zipped to a zipped folder.
+
+   
 
    ![image](https://github.com/user-attachments/assets/e8a24058-f755-43a8-a86f-5044f0fdf331)
 
