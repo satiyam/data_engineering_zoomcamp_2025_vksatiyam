@@ -98,7 +98,11 @@ Assign a static IP address to the machine on GCP VM.
 
 #### Creating a new GCS bucket 
 
-1. Go to GCP and setup a new GCS bucket for the project.
+1. Go to GCP and setup the following GCS buckets for the project:
+
+![image](https://github.com/user-attachments/assets/de2dc4b9-9104-45ac-8800-288e4c0ee26f)
+
+
 
 #### Creating a new principal service account
 
